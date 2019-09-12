@@ -1,0 +1,110 @@
+CREATE DATABASE projectdb;
+
+CREATE TABLE projectdb.`users` 
+(
+    `id` INT NOT NULL AUTO_INCREMENT,
+    `first_name` VARCHAR(50) NOT NULL,
+     `last_name` VARCHAR(50) NOT NULL,
+    `dp` VARCHAR(100) DEFAULT 'dp/default.png',
+    `email` VARCHAR(100) NOT NULL,
+    `password` VARCHAR(100) NOT NULL,
+    `hash` VARCHAR(32) NOT NULL,
+    `active` BOOL NOT NULL DEFAULT 0,
+PRIMARY KEY (`id`) 
+);
+
+CREATE TABLE projectdb.`requests`
+(
+    `id` INT NOT NULL AUTO_INCREMENT,
+    `rto` INT NOT NULL,
+    `rfrom` INT NOT NULL,
+PRIMARY KEY (`id`),
+FOREIGN KEY (`rto`) REFERENCES users(`id`)
+ON DELETE CASCADE
+ON UPDATE CASCADE,
+FOREIGN KEY (`rfrom`) REFERENCES users(`id`)
+ON DELETE CASCADE
+ON UPDATE CASCADE
+);
+
+CREATE TABLE projectdb.`friends` 
+(
+    `id` INT NOT NULL AUTO_INCREMENT,
+    `frnd1` INT NOT NULL,
+    `frnd2` INT NOT NULL,
+PRIMARY KEY (`id`),
+FOREIGN KEY (`frnd1`) REFERENCES users(`id`)
+ON DELETE CASCADE
+ON UPDATE CASCADE,
+FOREIGN KEY (`frnd2`) REFERENCES users(`id`)
+ON DELETE CASCADE
+ON UPDATE CASCADE
+);
+
+
+CREATE TABLE projectdb.`posts` 
+(
+    `id` INT NOT NULL AUTO_INCREMENT,
+    `author` INT NOT NULL,
+    `wall` INT NOT NULL,
+    `privacy` INT NOT NULL DEFAULT 1,
+    `content` TEXT NOT NULL,
+    `photo` VARCHAR(100),
+PRIMARY KEY (`id`),
+FOREIGN KEY (author) REFERENCES users(id)
+ON DELETE CASCADE
+ON UPDATE CASCADE,
+FOREIGN KEY (wall) REFERENCES users(id)
+ON DELETE CASCADE
+ON UPDATE CASCADE
+);
+
+CREATE TABLE projectdb.`messages`
+(
+    `id` INT NOT NULL AUTO_INCREMENT,
+    `msgid` INT NOT NULL,
+    `mfrom` INT NOT NULL,
+    `mto` INT NOT NULL,
+    `text` TEXT NOT NULL,
+    `fdelete` BOOL NOT NULL DEFAULT 0,
+    `tdelete` BOOL NOT NULL DEFAULT 0,
+PRIMARY KEY (`id`),
+FOREIGN KEY (msgid) REFERENCES friends(id)
+ON DELETE CASCADE
+ON UPDATE CASCADE,
+FOREIGN KEY (mfrom) REFERENCES users(id)
+ON DELETE CASCADE
+ON UPDATE CASCADE,
+FOREIGN KEY (mto) REFERENCES users(id)
+ON DELETE CASCADE
+ON UPDATE CASCADE
+);
+
+CREATE TABLE projectdb.`likes` 
+(
+    `id` INT NOT NULL AUTO_INCREMENT,
+    `post` INT NOT NULL,
+    `liker` INT NOT NULL,
+PRIMARY KEY (`id`),
+FOREIGN KEY (`post`) REFERENCES posts(`id`)
+ON DELETE CASCADE
+ON UPDATE CASCADE,
+FOREIGN KEY (`liker`) REFERENCES users(`id`)
+ON DELETE CASCADE
+ON UPDATE CASCADE
+);
+
+CREATE TABLE projectdb.`comments`
+(
+    `id` INT NOT NULL AUTO_INCREMENT,
+    `post` INT NOT NULL,
+    `writer` INT NOT NULL,
+    `text` TEXT NOT NULL,
+    PRIMARY KEY (`id`),
+FOREIGN KEY (`post`) REFERENCES posts(`id`)
+ON DELETE CASCADE
+ON UPDATE CASCADE,
+FOREIGN KEY (`writer`) REFERENCES users(`id`)
+ON DELETE CASCADE
+ON UPDATE CASCADE
+);
